@@ -26,8 +26,8 @@ exports.handleRequest = function (req, res) {
           res.end(data);
         });
       } else {
-        res.writeHead(200, httpHelpers.headers);
-        res.end("We're building something for you");
+        res.writeHead(404, httpHelpers.headers);
+        res.end();
       }
     }
 
