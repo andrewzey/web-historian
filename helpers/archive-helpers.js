@@ -52,8 +52,11 @@ exports.addUrlToList = function(target){
   // });
 };
 
-exports.isURLArchived = function(webURL){
-  return fs.existsSync(exports.paths.archivedSites + "/" + webURL);
+exports.isURLArchived = function(webURL, callback){
+  var pathName = exports.paths.archivedSites + "/" + webURL;
+  fs.exists(pathName, function(exists) {
+    callback(exists);
+  });
 };
 
 exports.downloadSite = function(){

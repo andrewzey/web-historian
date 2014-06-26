@@ -47,15 +47,14 @@ exports.getHandler = function(req, res) {
   }
 
   else if (asset !== undefined) {
-    if (archive.isURLArchived(asset)) {
-      exports.serveAssets(res, asset);
-    }
-
-    else {
-      exports.send404(res);
-    }
+    archive.isURLArchived(asset, function(exists){
+      if (exists) {
+        exports.serveAssets(res, asset);
+      } else {
+        exports.send404(res);
+      }
+    });
   }
-
 };
 
 exports.postHandler = function(req, res) {
@@ -68,15 +67,19 @@ exports.postHandler = function(req, res) {
     //gets rid of "url=" in data received from POST request
     requestURL = requestURL.slice(4);
 
+    archive.isURLArchived(requestURL, function(exists) {
+      if(exists) {
+        exports.redirect(res, requestURL);
+      }
+      else {
+        exports.redirect(res, 'loading');
+      }
+    });
+
     archive.readListOfUrls(function(arr){
       archive.isUrlInList(arr, requestURL, function(isFound){
-        if (isFound) {
-          //ADD ME:  check if URL is archived
-          exports.redirect(res, requestURL);
-        }
-        else {
+        if (!isFound) {
           //archive.addUrlToList(requestURL);
-          exports.redirect(res, 'loading');
         }
       });
     });
