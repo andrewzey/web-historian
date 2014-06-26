@@ -18,8 +18,10 @@ exports.serveAssets = function(res, asset) {
   });
 };
 
-exports.redirect = function(res, path){
-
+exports.redirect = function(res, location){
+  exports.headers['Location'] = '/' + location;
+  exports.sendResponse(res, 302, location);
+  delete exports.headers['Location'];
 };
 
 exports.sendResponse = function(res, statusCode, data) {
@@ -54,39 +56,31 @@ exports.getHandler = function(req, res) {
     }
   }
 
-
-
 };
 
 exports.postHandler = function(req, res) {
-  //something
+  var requestURL = '';
+  req.on('data', function(chunk) {
+    requestURL += chunk;
+  });
+
+  req.on('end', function(){
+    //gets rid of "url=" in data received from POST request
+    requestURL = requestURL.slice(4);
+
+    if(archive.isUrlInList(requestURL)) {
+
+      if(archive.isURLArchived(requestURL)) {
+        exports.redirect(res, requestURL);
+      }
+      else {
+        exports.redirect(res, 'loading');
+      }
+    }
+
+    else {
+      archive.addUrlToList(requestURL);
+      exports.redirect(res, 'loading');
+    }
+  });
 };
-
-// } else if(req.method === 'POST') {
-//   var postData = '';
-//   req.on('data', function(chunk) {
-//     postData += chunk;
-//   });
-//   req.on('end', function(){
-//     console.log(postData);
-//     if(archive.isUrlInList(postData)) {
-//       if(archive.isURLArchived(postData)) {
-//         httpHelpers.headers['Location'] = '/' + postData;
-//         res.writeHead(302, httpHelpers.headers);
-//         res.end();
-//         delete httpHelpers.headers['Location'];
-//       }
-//     } else {
-//       archive.addUrlToList(postData);
-//       httpHelpers.headers['Location'] = '/' + 'loading';
-//       res.writeHead(302, httpHelpers.headers);
-//       res.end();
-//       delete httpHelpers.headers['Location'];
-//     }
-//   });
-// }
-
-// else {
-//   res.writeHead(404, httpHelpers.headers);
-//   res.end('Nice try hacker');
-// }
