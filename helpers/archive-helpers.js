@@ -26,17 +26,27 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
+  //read the file and split by \n
+  //return the array
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(target){
+  //call readListOfUrls
+  //iterate through each item
+  //if target is in array, return true, else return false
+  return true;
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(target){
+  //call readListOfUrls
+  //push target
+  //join array by ('\n')
+  //write the file to disk
 };
 
 exports.isURLArchived = function(webURL){
   return fs.existsSync(exports.paths.archivedSites + "/" + webURL);
 };
 
-exports.downloadUrls = function(){
+exports.downloadSite = function(){
 };
