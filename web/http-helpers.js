@@ -68,19 +68,18 @@ exports.postHandler = function(req, res) {
     //gets rid of "url=" in data received from POST request
     requestURL = requestURL.slice(4);
 
-    if(archive.isUrlInList(requestURL)) {
+    archive.readListOfUrls(function(arr){
+      archive.isUrlInList(arr, requestURL, function(isFound){
+        if (isFound) {
+          //ADD ME:  check if URL is archived
+          exports.redirect(res, requestURL);
+        }
+        else {
+          //archive.addUrlToList(requestURL);
+          exports.redirect(res, 'loading');
+        }
+      });
+    });
 
-      if(archive.isURLArchived(requestURL)) {
-        exports.redirect(res, requestURL);
-      }
-      else {
-        exports.redirect(res, 'loading');
-      }
-    }
-
-    else {
-      archive.addUrlToList(requestURL);
-      exports.redirect(res, 'loading');
-    }
   });
 };
