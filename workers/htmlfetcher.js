@@ -1,3 +1,15 @@
-// eventually, you'll have some code here that uses the code in `archive-helpers.js`
-// to actually download the urls you want to download.
-// var fetchers = require('./helpers/archive-helpers.js');
+var archive = require('../helpers/archive-helpers.js');
+
+archive.readListOfUrls(function(arr){
+  //iterate through every url in array (ignore '')
+  for (var i = 0; i < arr.length; i++) {
+    var site = arr[i];
+    //check if it's archived
+    archive.isURLArchived(site, function(exists){
+      //if not, download it
+      if (!exists) {
+        archive.downloadSite(site);
+      }
+    });
+  }
+});
